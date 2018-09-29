@@ -1,4 +1,4 @@
-package com.foreflight.airportinfoapi.airportinfoapi;
+package com.foreflight.airportinfoapi;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
