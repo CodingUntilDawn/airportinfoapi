@@ -1,47 +1,40 @@
 package com.foreflight.airportinfoapi.services.impl;
 
+import com.foreflight.airportinfoapi.models.airport.AirportWrapperModel;
 import com.foreflight.airportinfoapi.services.face.AirportService;
-import net.minidev.json.JSONObject;
+import org.springframework.http.MediaType;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.HttpServerErrorException;
+import org.springframework.web.client.RestTemplate;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
+import java.util.Arrays;
 
 @Service
 public class AirportServiceImpl implements AirportService {
     @Override
-    public String getAirport(String airport) throws IOException {
-        //change this to be pulled from a config file
-        String url = String.format("https://qa.foreflight.com/weather/report/%s", airport);
-        HttpURLConnection con = null;
-        String tempReturn = "testing";
+    public String getAirport(String airport){
+        RestTemplate restTemplate = new RestTemplate();
+        MappingJackson2HttpMessageConverter mappingJackson2HttpMessageConverter = new MappingJackson2HttpMessageConverter();
+        mappingJackson2HttpMessageConverter.setSupportedMediaTypes(Arrays.asList(MediaType.APPLICATION_JSON, MediaType.APPLICATION_OCTET_STREAM));
+        restTemplate.getMessageConverters().add(mappingJackson2HttpMessageConverter);
+
+        String tempReturn;
 
         try {
-            URL airportUrl = new URL(url);
-            con = (HttpURLConnection) airportUrl.openConnection();
-            con.setRequestMethod("GET");
+            AirportWrapperModel airportModel  =
+                    restTemplate.getForObject(
+                            "https://qa.foreflight.com/airports/{airport}",
+                            AirportWrapperModel.class, airport
+                    );
 
-            StringBuilder content;
-            try (BufferedReader in = new BufferedReader(
-                    new InputStreamReader(con.getInputStream()))) {
+            tempReturn=airportModel.getAirport().getAirportGetResultsModel().getName();
+        }catch (HttpClientErrorException | HttpServerErrorException httpClientOrServerExc) {
 
-                String line;
-                content = new StringBuilder();
+            tempReturn = httpClientOrServerExc.getMessage();
 
-                while ((line = in.readLine()) != null) {
-                    content.append(line);
-                    content.append(System.lineSeparator());
-                }
-            }
-
-            tempReturn = content.toString();
-        } finally {
-            con.disconnect();
         }
-
         return tempReturn;
     }
 }

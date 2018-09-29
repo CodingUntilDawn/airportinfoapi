@@ -1,43 +1,36 @@
 package com.foreflight.airportinfoapi.services.impl;
 
-import net.minidev.json.JSONObject;
+import com.foreflight.airportinfoapi.models.weather.WeatherWrapperModel;
+import com.foreflight.airportinfoapi.services.face.WeatherService;
+import org.springframework.http.MediaType;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
-import java.io.IOException;
-import java.net.HttpURLConnection;
-import java.net.URL;
+import java.util.Arrays;
 
 @Service
-public class WeatherServiceImpl {
-    /*public JSONObject getWeatherByAirport(String airport) throws IOException {
-        String url = "https://qa.foreflight.com/weather/report/KDAB";
+public class WeatherServiceImpl implements WeatherService {
 
-        try {
+    @Override
+    public String getWeatherByAirport(String airport) {
+        RestTemplate restTemplate = new RestTemplate();
+        MappingJackson2HttpMessageConverter mappingJackson2HttpMessageConverter = new MappingJackson2HttpMessageConverter();
+        mappingJackson2HttpMessageConverter.setSupportedMediaTypes(Arrays.asList(MediaType.APPLICATION_JSON, MediaType.APPLICATION_OCTET_STREAM));
+        restTemplate.getMessageConverters().add(mappingJackson2HttpMessageConverter);
 
-            URL myurl = new URL(url);
-            con = (HttpURLConnection) myurl.openConnection();
+        /*String compareWeather = restTemplate.getForObject(
+                "https://qa.foreflight.com/weather/report/{airport}",
+                String.class, airport
+        );*/
 
-            con.setRequestMethod("GET");
+        WeatherWrapperModel weatherModel  =
+                restTemplate.getForObject(
+                        "https://qa.foreflight.com/weather/report/{airport}",
+                        WeatherWrapperModel.class, airport
+                );
 
-            StringBuilder content;
+        return weatherModel.getWeatherReportModel().getConditions().getText();
+    }
 
-            try (BufferedReader in = new BufferedReader(
-                    new InputStreamReader(con.getInputStream()))) {
-
-                String line;
-                content = new StringBuilder();
-
-                while ((line = in.readLine()) != null) {
-                    content.append(line);
-                    content.append(System.lineSeparator());
-                }
-            }
-
-            System.out.println(content.toString());
-
-        } finally {
-
-            con.disconnect();
-        }
-    }*/
 }
