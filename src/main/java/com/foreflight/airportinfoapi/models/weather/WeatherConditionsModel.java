@@ -80,8 +80,4 @@ public class WeatherConditionsModel {
     public void setWindModel(WindModel windModel) {
         this.windModel = windModel;
     }
-
-    public double getTempF(){
-        return (9/5) * getTempC() + 32;
-    }
 }

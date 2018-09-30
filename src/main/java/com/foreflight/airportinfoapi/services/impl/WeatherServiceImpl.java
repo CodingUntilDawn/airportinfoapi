@@ -21,7 +21,7 @@ public class WeatherServiceImpl implements WeatherService {
         mappingJackson2HttpMessageConverter.setSupportedMediaTypes(Arrays.asList(MediaType.APPLICATION_JSON, MediaType.APPLICATION_OCTET_STREAM));
         restTemplate.getMessageConverters().add(mappingJackson2HttpMessageConverter);
 
-        WeatherWrapperModel weatherModel = new WeatherWrapperModel();
+        WeatherWrapperModel weatherModel;
 
         try {
             weatherModel =
@@ -30,7 +30,7 @@ public class WeatherServiceImpl implements WeatherService {
                             WeatherWrapperModel.class, airport
                     );
         }catch (HttpClientErrorException | HttpServerErrorException httpClientOrServerExc){
-
+            throw new RuntimeException("The weather endpoint is not reachable");
         }
 
         return weatherModel;

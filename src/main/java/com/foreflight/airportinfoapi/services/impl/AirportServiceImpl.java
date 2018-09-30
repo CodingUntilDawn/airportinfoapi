@@ -20,7 +20,7 @@ public class AirportServiceImpl implements AirportService {
         mappingJackson2HttpMessageConverter.setSupportedMediaTypes(Arrays.asList(MediaType.APPLICATION_JSON, MediaType.APPLICATION_OCTET_STREAM));
         restTemplate.getMessageConverters().add(mappingJackson2HttpMessageConverter);
 
-        AirportWrapperModel airportModel = new AirportWrapperModel();
+        AirportWrapperModel airportModel;
 
         try {
             airportModel  =
@@ -29,7 +29,7 @@ public class AirportServiceImpl implements AirportService {
                             AirportWrapperModel.class, airport
                     );
         }catch (HttpClientErrorException | HttpServerErrorException httpClientOrServerExc) {
-
+            throw new RuntimeException("The airport endpoint is not reachable");
         }
         return airportModel;
     }

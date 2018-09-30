@@ -48,71 +48,12 @@ public class AirportWeatherServiceImpl implements AirportWeatherService {
         AirportModel airportModel = airportWrapperModel.getAirportModel();
         if(airportModel!=null) {
             AirportResultsModel airportResultsModel = airportModel.getAirportResultsModel();
-            if(airportResultsModel!=null) {
-                airportWeatherModel.setIdentifier(airportResultsModel.getIdentifier());
-                airportWeatherModel.setName(airportResultsModel.getName());
-                airportWeatherModel.setLatitude(airportResultsModel.getLatitude());
-                airportWeatherModel.setLongitude(airportResultsModel.getLongitude());
-                airportWeatherModel.setRunways(airportResultsModel.getRunwayModels());
-            }
+            airportWeatherModel = populateAirportInfo(airportWeatherModel, airportResultsModel);
         }
 
         WeatherReportModel weatherReportModel = weatherWrapperModel.getWeatherReportModel();
         if(weatherReportModel!=null){
-            WeatherConditionsModel weatherConditionsModel = weatherReportModel.getConditions();
-            AirportWeatherReportModel airportWeatherReportModel = new AirportWeatherReportModel();
-            if(weatherConditionsModel!=null){
-                airportWeatherReportModel.setTempF(weatherConditionsModel.getTempF());
-                airportWeatherReportModel.setRelativeHumidity(weatherConditionsModel.getRelativeHumidity());
-
-                String cloudCoverageSummary = cloudCoverageService.determineCloudCoverageSummary(weatherConditionsModel.getCloudLayerModelV1(), weatherConditionsModel.getCloudLayerModelV2());
-                airportWeatherReportModel.setCloudCoverageSummary(cloudCoverageSummary);
-
-                VisibilityModel visibilityModel = weatherConditionsModel.getVisibilityModel();
-                if(visibilityModel!=null) {
-                    //is DistanceSM or prevailingVisSm correct?  assume DistanceSM until confirmed
-                    airportWeatherReportModel.setVisibility(visibilityModel.getDistanceSM());
-                }
-
-                WindModel windModel = weatherConditionsModel.getWindModel();
-                if(windModel!=null) {
-                    airportWeatherReportModel.setWindSpeed(windModel.getSpeedKts());
-                    airportWeatherReportModel.setWindDirection(windModel.getDirection());
-                }
-
-                ForecastModel forecastModel = weatherReportModel.getForecastModel();
-                if(forecastModel!=null){
-                    List<AirportWeatherForecastModel> airportWeatherForecastModels= new ArrayList<>();
-                    ForecastConditionsModel[] forecastConditionsModel = forecastModel.getForecastConditionsModels();
-                    if(forecastConditionsModel.length>=2){
-                        AirportWeatherForecastModel day2 = new AirportWeatherForecastModel();
-
-                        ForecastPeriodModel forecastPeriodModel = forecastConditionsModel[1].getPeriodModel();
-                        if(forecastPeriodModel != null) {
-                            ZoneOffset offset1 = ZoneOffset.systemDefault().getRules().getOffset(forecastPeriodModel.getDateStart().toInstant());
-                            day2.setTimeOffset(offset1.getId());
-                        }
-                        //convert from C to F
-                        day2.setTemperatureF(forecastConditionsModel[1].getTempC());
-                        day2.setWind(forecastConditionsModel[1].getWindModel());
-                        airportWeatherForecastModels.add(day2);
-                    }
-                    if(forecastConditionsModel.length>=3){
-                        AirportWeatherForecastModel day3 = new AirportWeatherForecastModel();
-
-                        ForecastPeriodModel forecastPeriodModel = forecastConditionsModel[2].getPeriodModel();
-                        if(forecastPeriodModel != null) {
-                            ZoneOffset offset1 = ZoneOffset.systemDefault().getRules().getOffset(forecastPeriodModel.getDateStart().toInstant());
-                            day3.setTimeOffset(offset1.getId());
-                        }
-                        //convert from C to F
-                        day3.setTemperatureF(forecastConditionsModel[2].getTempC());
-                        day3.setWind(forecastConditionsModel[2].getWindModel());
-                        airportWeatherForecastModels.add(day3);
-                    }
-                    airportWeatherReportModel.setForecasts(airportWeatherForecastModels);
-                }
-            }
+            AirportWeatherReportModel airportWeatherReportModel = populateWeatherReportInfo(weatherReportModel);
             airportWeatherModel.setWeatherReport(airportWeatherReportModel);
         }
         return airportWeatherModel;
@@ -125,5 +66,73 @@ public class AirportWeatherServiceImpl implements AirportWeatherService {
             airportWeatherModels.add(getAirportWeatherByAirport(identifier));
         }
         return airportWeatherModels;
+    }
+
+    private AirportWeatherReportModel populateWeatherReportInfo(WeatherReportModel weatherReportModel) {
+        WeatherConditionsModel weatherConditionsModel = weatherReportModel.getConditions();
+        AirportWeatherReportModel airportWeatherReportModel = new AirportWeatherReportModel();
+        if(weatherConditionsModel!=null){
+            airportWeatherReportModel.setTempF(convertToF(weatherConditionsModel.getTempC()));
+            airportWeatherReportModel.setRelativeHumidity(weatherConditionsModel.getRelativeHumidity());
+
+            String cloudCoverageSummary = cloudCoverageService.determineCloudCoverageSummary(weatherConditionsModel.getCloudLayerModelV1(), weatherConditionsModel.getCloudLayerModelV2());
+            airportWeatherReportModel.setCloudCoverageSummary(cloudCoverageSummary);
+
+            VisibilityModel visibilityModel = weatherConditionsModel.getVisibilityModel();
+            if(visibilityModel!=null) {
+                //is DistanceSM or prevailingVisSm correct?  assume DistanceSM until confirmed
+                airportWeatherReportModel.setVisibility(visibilityModel.getDistanceSM());
+            }
+
+            WindModel windModel = weatherConditionsModel.getWindModel();
+            if(windModel!=null) {
+                airportWeatherReportModel.setWindSpeed(windModel.getSpeedKts());
+                airportWeatherReportModel.setWindDirection(windModel.getDirection());
+            }
+
+            ForecastModel forecastModel = weatherReportModel.getForecastModel();
+            if(forecastModel!=null){
+                List<AirportWeatherForecastModel> airportWeatherForecastModels= new ArrayList<>();
+                airportWeatherForecastModels = populateAirportWeatherForecastInfo(forecastModel, airportWeatherForecastModels, 1);
+                airportWeatherForecastModels = populateAirportWeatherForecastInfo(forecastModel, airportWeatherForecastModels, 2);
+
+                airportWeatherReportModel.setForecasts(airportWeatherForecastModels);
+            }
+        }
+        return airportWeatherReportModel;
+    }
+
+    private AirportWeatherModel populateAirportInfo(AirportWeatherModel airportWeatherModel, AirportResultsModel airportResultsModel) {
+        if(airportResultsModel!=null) {
+            airportWeatherModel.setIdentifier(airportResultsModel.getIdentifier());
+            airportWeatherModel.setName(airportResultsModel.getName());
+            airportWeatherModel.setLatitude(airportResultsModel.getLatitude());
+            airportWeatherModel.setLongitude(airportResultsModel.getLongitude());
+            airportWeatherModel.setRunways(airportResultsModel.getRunwayModels());
+        }
+        return airportWeatherModel;
+    }
+
+    private List<AirportWeatherForecastModel> populateAirportWeatherForecastInfo(ForecastModel forecastModel, List<AirportWeatherForecastModel> airportWeatherForecastModels, int searchIndex){
+        new ArrayList<>();
+        ForecastConditionsModel[] forecastConditionsModel = forecastModel.getForecastConditionsModels();
+        if(forecastConditionsModel.length>= (searchIndex+1)){
+            AirportWeatherForecastModel airportWeatherForecastModel = new AirportWeatherForecastModel();
+
+            ForecastPeriodModel forecastPeriodModel = forecastConditionsModel[searchIndex].getPeriodModel();
+            if(forecastPeriodModel != null) {
+                ZoneOffset offset1 = ZoneOffset.systemDefault().getRules().getOffset(forecastPeriodModel.getDateStart().toInstant());
+                airportWeatherForecastModel.setTimeOffset(offset1.getId());
+            }
+            //convert from C to F
+            airportWeatherForecastModel.setTemperatureF(convertToF(forecastConditionsModel[searchIndex].getTempC()));
+            airportWeatherForecastModel.setWind(forecastConditionsModel[searchIndex].getWindModel());
+            airportWeatherForecastModels.add(airportWeatherForecastModel);
+        }
+        return airportWeatherForecastModels;
+    }
+
+    public double convertToF(double tempC){
+        return 32 + (tempC * 9/5);
     }
 }
