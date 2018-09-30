@@ -28,11 +28,11 @@ public class CloudCoverageService {
             }
         }else{
             for(int j = 0; j< cloudLayerModelV1.length; j++){
-                summary+=String.format("The coverage at altitude %d Ft is %s", cloudLayerModelV2[j].getAltitudeFt(), cloudLayerModelV2[j].getCoverage());
+                summary+=String.format("The coverage at altitude %d Ft is %s.  ", cloudLayerModelV2[j].getAltitudeFt(), cloudLayerModelV2[j].getCoverage());
             }
         }
 
-        return summary;
+        return summary.trim();
     }
 
     /*

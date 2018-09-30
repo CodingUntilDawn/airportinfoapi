@@ -4,24 +4,25 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class WindModel {
     @JsonProperty("speedKts")
-    private int speedKts;
+    private double speedKts;
 
-    @JsonProperty("variable")
-    private boolean variable;
+    @JsonProperty("direction")
+    private int direction;
 
-    public int getSpeedKts() {
+    public double getSpeedKts() {
         return speedKts;
     }
 
-    public void setSpeedKts(int speedKts) {
+    public void setSpeedKts(double speedKts) {
         this.speedKts = speedKts;
     }
 
-    public boolean isVariable() {
-        return variable;
+
+    public int getDirection() {
+        return direction;
     }
 
-    public void setVariable(boolean variable) {
-        this.variable = variable;
+    public void setDirection(int direction) {
+        this.direction = direction;
     }
 }

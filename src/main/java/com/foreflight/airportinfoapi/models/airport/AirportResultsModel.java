@@ -19,6 +19,9 @@ public class AirportResultsModel implements Serializable {
     @JsonProperty("longitude")
     private double longitude;
 
+    @JsonProperty("runways")
+    private RunwayModel[] runwayModels;
+
     public String getIdentifier() {
         return identifier;
     }
@@ -49,5 +52,13 @@ public class AirportResultsModel implements Serializable {
 
     public void setLongitude(double longitude) {
         this.longitude = longitude;
+    }
+
+    public RunwayModel[] getRunwayModels() {
+        return runwayModels;
+    }
+
+    public void setRunwayModels(RunwayModel[] runwayModels) {
+        this.runwayModels = runwayModels;
     }
 }

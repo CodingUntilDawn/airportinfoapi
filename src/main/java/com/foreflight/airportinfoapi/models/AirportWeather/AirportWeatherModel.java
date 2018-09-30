@@ -1,16 +1,15 @@
 package com.foreflight.airportinfoapi.models.AirportWeather;
 
-import com.foreflight.airportinfoapi.models.airport.AirportModel;
-import com.foreflight.airportinfoapi.models.airport.AirportResultsModel;
-import com.foreflight.airportinfoapi.models.airport.AirportWrapperModel;
-import com.foreflight.airportinfoapi.models.weather.WeatherConditionsModel;
-import com.foreflight.airportinfoapi.models.weather.WeatherReportModel;
-import com.foreflight.airportinfoapi.models.weather.WeatherWrapperModel;
+import com.foreflight.airportinfoapi.models.airport.RunwayModel;
+
+import java.util.List;
 
 public class AirportWeatherModel {
     private String identifier;
 
     private String name;
+
+    private RunwayModel[] runways;
 
     private double latitude;
 
@@ -23,6 +22,12 @@ public class AirportWeatherModel {
     private String cloudCoverageSummary;
 
     private int visibility;
+
+    private double windSpeed;
+
+    private int windDirection;
+
+    private List<AirportWeatherForecastModel> forecasts;
 
     public String getIdentifier() {
         return identifier;
@@ -38,6 +43,14 @@ public class AirportWeatherModel {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public RunwayModel[] getRunways() {
+        return runways;
+    }
+
+    public void setRunways(RunwayModel[] runways) {
+        this.runways = runways;
     }
 
     public double getLatitude() {
@@ -86,6 +99,30 @@ public class AirportWeatherModel {
 
     public void setVisibility(int visibility) {
         this.visibility = visibility;
+    }
+
+    public double getWindSpeed() {
+        return windSpeed;
+    }
+
+    public void setWindSpeed(double windSpeed) {
+        this.windSpeed = windSpeed;
+    }
+
+    public int getWindDirection() {
+        return windDirection;
+    }
+
+    public void setWindDirection(int windDirection) {
+        this.windDirection = windDirection;
+    }
+
+    public List<AirportWeatherForecastModel> getForecasts() {
+        return forecasts;
+    }
+
+    public void setForecasts(List<AirportWeatherForecastModel> forecasts) {
+        this.forecasts = forecasts;
     }
 
     public AirportWeatherModel(){
