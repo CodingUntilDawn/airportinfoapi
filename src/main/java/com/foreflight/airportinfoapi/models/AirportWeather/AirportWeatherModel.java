@@ -3,6 +3,8 @@ package com.foreflight.airportinfoapi.models.AirportWeather;
 import com.foreflight.airportinfoapi.models.airport.AirportModel;
 import com.foreflight.airportinfoapi.models.airport.AirportResultsModel;
 import com.foreflight.airportinfoapi.models.airport.AirportWrapperModel;
+import com.foreflight.airportinfoapi.models.weather.WeatherConditionsModel;
+import com.foreflight.airportinfoapi.models.weather.WeatherReportModel;
 import com.foreflight.airportinfoapi.models.weather.WeatherWrapperModel;
 
 public class AirportWeatherModel {
@@ -13,6 +15,14 @@ public class AirportWeatherModel {
     private double latitude;
 
     private double longitude;
+
+    private double tempF;
+
+    private double relativeHumidity;
+
+    private String cloudCoverageSummary;
+
+    private int visibility;
 
     public String getIdentifier() {
         return identifier;
@@ -46,16 +56,39 @@ public class AirportWeatherModel {
         this.longitude = longitude;
     }
 
-    public AirportWeatherModel(AirportWrapperModel airportWrapperModel, WeatherWrapperModel weatherWrapperModel){
-        AirportModel airportModel = airportWrapperModel.getAirportModel();
-        if(airportModel!=null) {
-            AirportResultsModel airportResultsModel = airportModel.getAirportResultsModel();
-            if(airportResultsModel!=null) {
-                setIdentifier(airportResultsModel.getIdentifier());
-                setName(airportResultsModel.getName());
-                setLatitude(airportResultsModel.getLatitude());
-                setLongitude(airportResultsModel.getLongitude());
-            }
-        }
+    public double getTempF() {
+        return tempF;
+    }
+
+    public void setTempF(double tempF) {
+        this.tempF = tempF;
+    }
+
+    public double getRelativeHumidity() {
+        return relativeHumidity;
+    }
+
+    public void setRelativeHumidity(double humidity) {
+        this.relativeHumidity = humidity;
+    }
+
+    public String getCloudCoverageSummary() {
+        return cloudCoverageSummary;
+    }
+
+    public void setCloudCoverageSummary(String cloudCoverageSummary) {
+        this.cloudCoverageSummary = cloudCoverageSummary;
+    }
+
+    public int getVisibility() {
+        return visibility;
+    }
+
+    public void setVisibility(int visibility) {
+        this.visibility = visibility;
+    }
+
+    public AirportWeatherModel(){
+
     }
 }
