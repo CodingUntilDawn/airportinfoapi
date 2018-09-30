@@ -14,27 +14,23 @@ import java.util.Arrays;
 @Service
 public class AirportServiceImpl implements AirportService {
     @Override
-    public String getAirport(String airport){
+    public AirportWrapperModel getAirport(String airport){
         RestTemplate restTemplate = new RestTemplate();
         MappingJackson2HttpMessageConverter mappingJackson2HttpMessageConverter = new MappingJackson2HttpMessageConverter();
         mappingJackson2HttpMessageConverter.setSupportedMediaTypes(Arrays.asList(MediaType.APPLICATION_JSON, MediaType.APPLICATION_OCTET_STREAM));
         restTemplate.getMessageConverters().add(mappingJackson2HttpMessageConverter);
 
-        String tempReturn;
+        AirportWrapperModel airportModel = new AirportWrapperModel();
 
         try {
-            AirportWrapperModel airportModel  =
+            airportModel  =
                     restTemplate.getForObject(
                             "https://qa.foreflight.com/airports/{airport}",
                             AirportWrapperModel.class, airport
                     );
-
-            tempReturn=airportModel.getAirport().getAirportGetResultsModel().getName();
         }catch (HttpClientErrorException | HttpServerErrorException httpClientOrServerExc) {
 
-            tempReturn = httpClientOrServerExc.getMessage();
-
         }
-        return tempReturn;
+        return airportModel;
     }
 }

@@ -6,15 +6,15 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.io.Serializable;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class AirportGetModel implements Serializable {
+public class AirportModel implements Serializable {
     @JsonProperty("results")
-    private AirportGetResultsModel results;
+    private AirportResultsModel results;
 
-    public AirportGetResultsModel getAirportGetResultsModel() {
+    public AirportResultsModel getAirportResultsModel() {
         return results;
     }
 
-    public void setAirportGetResultsModel(AirportGetResultsModel airportGetResultsModel) {
-        this.results = airportGetResultsModel;
+    public void setAirportResultsModel(AirportResultsModel airportResultsModel) {
+        this.results = airportResultsModel;
     }
 }

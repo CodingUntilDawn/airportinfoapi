@@ -8,13 +8,13 @@ import java.io.Serializable;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class AirportWrapperModel implements Serializable {
     @JsonProperty("airport")
-    private AirportGetModel airport;
+    private AirportModel airport;
 
-    public AirportGetModel getAirport() {
+    public AirportModel getAirportModel() {
         return airport;
     }
 
-    public void setAirport(AirportGetModel airport) {
+    public void setAirportModel(AirportModel airport) {
         this.airport = airport;
     }
 }

@@ -1,8 +1,9 @@
 package com.foreflight.airportinfoapi.services.face;
 
+import com.foreflight.airportinfoapi.models.weather.WeatherWrapperModel;
 import org.springframework.stereotype.Component;
 
 @Component
 public interface WeatherService {
-    String getWeatherByAirport(String airport);
+    WeatherWrapperModel getWeatherByAirport(String airport);
 }
