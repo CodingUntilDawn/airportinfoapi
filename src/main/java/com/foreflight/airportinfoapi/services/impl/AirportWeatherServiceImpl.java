@@ -2,6 +2,7 @@ package com.foreflight.airportinfoapi.services.impl;
 
 import com.foreflight.airportinfoapi.models.AirportWeather.AirportWeatherForecastModel;
 import com.foreflight.airportinfoapi.models.AirportWeather.AirportWeatherModel;
+import com.foreflight.airportinfoapi.models.AirportWeather.AirportWeatherReportModel;
 import com.foreflight.airportinfoapi.models.airport.AirportModel;
 import com.foreflight.airportinfoapi.models.airport.AirportResultsModel;
 import com.foreflight.airportinfoapi.models.airport.AirportWrapperModel;
@@ -17,7 +18,6 @@ import org.springframework.stereotype.Service;
 
 import java.time.ZoneOffset;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 @Service
@@ -60,23 +60,24 @@ public class AirportWeatherServiceImpl implements AirportWeatherService {
         WeatherReportModel weatherReportModel = weatherWrapperModel.getWeatherReportModel();
         if(weatherReportModel!=null){
             WeatherConditionsModel weatherConditionsModel = weatherReportModel.getConditions();
+            AirportWeatherReportModel airportWeatherReportModel = new AirportWeatherReportModel();
             if(weatherConditionsModel!=null){
-                airportWeatherModel.setTempF(weatherConditionsModel.getTempF());
-                airportWeatherModel.setRelativeHumidity(weatherConditionsModel.getRelativeHumidity());
+                airportWeatherReportModel.setTempF(weatherConditionsModel.getTempF());
+                airportWeatherReportModel.setRelativeHumidity(weatherConditionsModel.getRelativeHumidity());
 
                 String cloudCoverageSummary = cloudCoverageService.determineCloudCoverageSummary(weatherConditionsModel.getCloudLayerModelV1(), weatherConditionsModel.getCloudLayerModelV2());
-                airportWeatherModel.setCloudCoverageSummary(cloudCoverageSummary);
+                airportWeatherReportModel.setCloudCoverageSummary(cloudCoverageSummary);
 
                 VisibilityModel visibilityModel = weatherConditionsModel.getVisibilityModel();
                 if(visibilityModel!=null) {
                     //is DistanceSM or prevailingVisSm correct?  assume DistanceSM until confirmed
-                    airportWeatherModel.setVisibility(visibilityModel.getDistanceSM());
+                    airportWeatherReportModel.setVisibility(visibilityModel.getDistanceSM());
                 }
 
                 WindModel windModel = weatherConditionsModel.getWindModel();
                 if(windModel!=null) {
-                    airportWeatherModel.setWindSpeed(windModel.getSpeedKts());
-                    airportWeatherModel.setWindDirection(windModel.getDirection());
+                    airportWeatherReportModel.setWindSpeed(windModel.getSpeedKts());
+                    airportWeatherReportModel.setWindDirection(windModel.getDirection());
                 }
 
                 ForecastModel forecastModel = weatherReportModel.getForecastModel();
@@ -109,12 +110,20 @@ public class AirportWeatherServiceImpl implements AirportWeatherService {
                         day3.setWind(forecastConditionsModel[2].getWindModel());
                         airportWeatherForecastModels.add(day3);
                     }
-                    airportWeatherModel.setForecasts(airportWeatherForecastModels);
+                    airportWeatherReportModel.setForecasts(airportWeatherForecastModels);
                 }
             }
+            airportWeatherModel.setWeatherReport(airportWeatherReportModel);
         }
         return airportWeatherModel;
     }
 
-
+    @Override
+    public List<AirportWeatherModel> getAirportWeathersByAirports(List<String> identifiers) {
+        List<AirportWeatherModel> airportWeatherModels = new ArrayList<>();
+        for (String identifier :identifiers) {
+            airportWeatherModels.add(getAirportWeatherByAirport(identifier));
+        }
+        return airportWeatherModels;
+    }
 }

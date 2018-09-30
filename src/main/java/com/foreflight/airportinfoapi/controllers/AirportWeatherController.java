@@ -4,10 +4,9 @@ import com.foreflight.airportinfoapi.models.AirportWeather.AirportWeatherModel;
 import com.foreflight.airportinfoapi.services.face.AirportWeatherService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 
 @RestController
@@ -18,9 +17,11 @@ public class AirportWeatherController {
 
     @RequestMapping(value = "/getAirportWeather/{identifier}", method = RequestMethod.GET, produces= MediaType.APPLICATION_JSON_VALUE)
     public AirportWeatherModel getAirportWeather(@PathVariable("identifier") String identifier){
-        //replace these models with a combined model
-        AirportWeatherModel airportWeatherModel = airportWeatherService.getAirportWeatherByAirport(identifier);
-        return airportWeatherModel;
+        return airportWeatherService.getAirportWeatherByAirport(identifier);
+    }
 
+    @RequestMapping(value = "/getMultipleAirportsWeather", method = RequestMethod.POST, produces= MediaType.APPLICATION_JSON_VALUE)
+    public List<AirportWeatherModel> getMultipleAirportsWeather(@RequestBody List<String> identifiers){
+        return airportWeatherService.getAirportWeathersByAirports(identifiers);
     }
 }
