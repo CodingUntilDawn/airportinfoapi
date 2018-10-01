@@ -1,4 +1,4 @@
-package com.foreflight.airportinfoapi.models.AirportWeather;
+package com.foreflight.airportinfoapi.models.airportWeather;
 
 import java.util.List;
 

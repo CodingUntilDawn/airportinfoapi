@@ -1,6 +1,6 @@
 package com.foreflight.airportinfoapi.controllers;
 
-import com.foreflight.airportinfoapi.models.AirportWeather.AirportWeatherModel;
+import com.foreflight.airportinfoapi.models.airportWeather.AirportWeatherModel;
 import com.foreflight.airportinfoapi.services.face.AirportWeatherService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;

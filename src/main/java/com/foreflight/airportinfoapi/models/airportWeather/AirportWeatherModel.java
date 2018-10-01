@@ -1,4 +1,4 @@
-package com.foreflight.airportinfoapi.models.AirportWeather;
+package com.foreflight.airportinfoapi.models.airportWeather;
 
 import com.foreflight.airportinfoapi.models.airport.RunwayModel;
 

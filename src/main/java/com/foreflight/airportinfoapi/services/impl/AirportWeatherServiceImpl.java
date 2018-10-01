@@ -1,8 +1,8 @@
 package com.foreflight.airportinfoapi.services.impl;
 
-import com.foreflight.airportinfoapi.models.AirportWeather.AirportWeatherForecastModel;
-import com.foreflight.airportinfoapi.models.AirportWeather.AirportWeatherModel;
-import com.foreflight.airportinfoapi.models.AirportWeather.AirportWeatherReportModel;
+import com.foreflight.airportinfoapi.models.airportWeather.AirportWeatherForecastModel;
+import com.foreflight.airportinfoapi.models.airportWeather.AirportWeatherModel;
+import com.foreflight.airportinfoapi.models.airportWeather.AirportWeatherReportModel;
 import com.foreflight.airportinfoapi.models.airport.AirportModel;
 import com.foreflight.airportinfoapi.models.airport.AirportResultsModel;
 import com.foreflight.airportinfoapi.models.airport.AirportWrapperModel;
