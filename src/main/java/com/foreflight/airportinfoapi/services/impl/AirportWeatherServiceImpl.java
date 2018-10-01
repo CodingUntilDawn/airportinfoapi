@@ -132,7 +132,7 @@ public class AirportWeatherServiceImpl implements AirportWeatherService {
         return airportWeatherForecastModels;
     }
 
-    public double convertToF(double tempC){
+    private double convertToF(double tempC){
         return 32 + (tempC * 9/5);
     }
 }
